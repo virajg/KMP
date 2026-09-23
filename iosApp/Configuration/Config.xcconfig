@@ -1,0 +1,9 @@
+TEAM_ID=
+
+PRODUCT_NAME=KMPDailyPluse
+PRODUCT_BUNDLE_IDENTIFIER=com.shaaya.kmpdailypluse.KMPDailyPluse$(TEAM_ID)
+
+CURRENT_PROJECT_VERSION=1
+MARKETING_VERSION=1.0
+
+FRAMEWORK_SEARCH_PATHS = $(inherited) "$(SRCROOT)/../sharedLogic/build/bin/iosSimulatorArm64/debugFramework" "$(SRCROOT)/../sharedLogic/build/bin/iosArm64/debugFramework"
