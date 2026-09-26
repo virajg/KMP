@@ -3,7 +3,7 @@ package com.shaaya.kmpdailypluse.core.di
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
 
-val sharedModules = listOf(networkModule, articlesModule)
+val sharedModules = listOf(networkModule, databaseModule, articlesModule)
 
 fun initKoin(appDeclaration: KoinAppDeclaration = {}) =
     startKoin {

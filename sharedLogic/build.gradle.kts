@@ -4,6 +4,15 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidMultiplatformLibrary)
     alias(libs.plugins.kotlinSerialization)
+    id("app.cash.sqldelight")
+}
+
+sqldelight {
+    databases {
+        create("DailyPulseDatabase") {
+            packageName.set("com.shaaya.kmpdailypluse.db")
+        }
+    }
 }
 
 kotlin {
@@ -56,8 +65,12 @@ kotlin {
 
             // SQLDelight
             implementation(libs.sqldelight.runtime)
+            implementation(libs.sqldelight.coroutines)
         }
         androidMain.dependencies {
+            // Koin Android
+            implementation(libs.koinAndroid)
+
             // Ktor Android engine
             implementation(libs.ktor.client.android)
             implementation(libs.ktor.client.okhttp)
