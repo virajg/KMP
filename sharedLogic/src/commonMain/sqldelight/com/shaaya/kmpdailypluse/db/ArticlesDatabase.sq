@@ -1,0 +1,17 @@
+CREATE TABLE ArticleEntity (
+    title TEXT NOT NULL PRIMARY KEY,
+    description TEXT NOT NULL,
+    content TEXT NOT NULL,
+    imageUrl TEXT NOT NULL,
+    publishedAt TEXT NOT NULL
+);
+
+selectAllArticles:
+SELECT * FROM ArticleEntity;
+
+insertArticle:
+INSERT OR REPLACE INTO ArticleEntity(title, description, content, imageUrl, publishedAt)
+VALUES (?, ?, ?, ?, ?);
+
+removeAllArticles:
+DELETE FROM ArticleEntity;

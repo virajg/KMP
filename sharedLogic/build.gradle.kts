@@ -23,6 +23,7 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "SharedLogic"
             isStatic = true
+            linkerOpts("-lsqlite3")
         }
     }
 
