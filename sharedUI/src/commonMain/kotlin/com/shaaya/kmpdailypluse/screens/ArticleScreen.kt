@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -52,7 +53,7 @@ fun ArticleScreen(
 
     ArticleScreenContent(
         state = articlesState,
-        onRetry = { viewModel.loadArticles() },
+        onRefresh = { viewModel.loadArticles() },
         onAboutClick = onAboutClick
     )
 }
@@ -65,7 +66,7 @@ fun ArticleScreen(
 @Composable
 fun ArticleScreenContent(
     state: ArticlesState,
-    onRetry: () -> Unit,
+    onRefresh: () -> Unit,
     onAboutClick: () -> Unit = {}
 ) {
     Scaffold(
@@ -90,43 +91,54 @@ fun ArticleScreenContent(
             is ArticlesState.Success -> {
                 ArticleListView(
                     articles = state.items,
+                    isRefreshing = false,
+                    onRefresh = onRefresh,
                     paddingValues = paddingValues
                 )
             }
             is ArticlesState.Empty -> {
                 ArticleEmptyView(
                     modifier = Modifier.padding(paddingValues),
-                    onRetry = onRetry
+                    onRetry = onRefresh
                 )
             }
             is ArticlesState.Error -> {
                 ArticleErrorView(
                     errorMessage = state.message,
                     modifier = Modifier.padding(paddingValues),
-                    onRetry = onRetry
+                    onRetry = onRefresh
                 )
             }
         }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArticleListView(
     articles: List<Article>,
+    isRefreshing: Boolean,
+    onRefresh: () -> Unit,
     paddingValues: PaddingValues
 ) {
-    LazyColumn(
+    PullToRefreshBox(
+        isRefreshing = isRefreshing,
+        onRefresh = onRefresh,
         modifier = Modifier
             .fillMaxSize()
-            .padding(paddingValues),
-        contentPadding = PaddingValues(16.dp),
-        verticalArrangement = Arrangement.spacedBy(16.dp)
+            .padding(paddingValues)
     ) {
-        items(
-            items = articles,
-            key = { article -> article.title }
-        ) { article ->
-            ArticleRowView(article = article)
+        LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            items(
+                items = articles,
+                key = { article -> article.title }
+            ) { article ->
+                ArticleRowView(article = article)
+            }
         }
     }
 }
@@ -284,7 +296,7 @@ fun ArticleScreenSuccessPreview() {
                     )
                 )
             ),
-            onRetry = {}
+            onRefresh = {}
         )
     }
 }
@@ -295,7 +307,7 @@ fun ArticleScreenLoadingPreview() {
     MaterialTheme {
         ArticleScreenContent(
             state = ArticlesState.Loading,
-            onRetry = {}
+            onRefresh = {}
         )
     }
 }
@@ -306,7 +318,7 @@ fun ArticleScreenEmptyPreview() {
     MaterialTheme {
         ArticleScreenContent(
             state = ArticlesState.Empty,
-            onRetry = {}
+            onRefresh = {}
         )
     }
 }
@@ -317,7 +329,7 @@ fun ArticleScreenErrorPreview() {
     MaterialTheme {
         ArticleScreenContent(
             state = ArticlesState.Error("Network connection failed. Please try again."),
-            onRetry = {}
+            onRefresh = {}
         )
     }
 }
